@@ -1,0 +1,8 @@
+bin/
+obj/
+publish/
+publish-output/
+logs/
+*.user
+.vs/
+*.msi
