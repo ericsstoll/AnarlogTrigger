@@ -11,11 +11,13 @@
     <AppProject>$(MSBuildProjectDirectory)\..\AnarlogTrigger\AnarlogTrigger.csproj</AppProject>
     <OutputPath>bin\x64\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\x64\$(Configuration)\</IntermediateOutputPath>
+    <!-- WASDK satellite assemblies can carry language tags Heat rejects (ICE03). -->
+    <SuppressIces>ICE03</SuppressIces>
   </PropertyGroup>
 
   <Target Name="PublishAppForInstaller" BeforeTargets="BeforeBuild">
     <MakeDir Directories="$(AppPublishDir)" />
-    <Exec Command="dotnet publish &quot;$(AppProject)&quot; -c $(Configuration) -r $(PublishRuntimeIdentifier) --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o &quot;$(AppPublishDir)&quot;" />
+    <Exec Command="dotnet publish &quot;$(AppProject)&quot; -c $(Configuration) -r $(PublishRuntimeIdentifier) --self-contained true -p:Platform=$(Platform) -p:WindowsPackageType=None -p:WindowsAppSDKSelfContained=true -p:PublishSingleFile=false -o &quot;$(AppPublishDir)&quot;" />
   </Target>
 
   <ItemGroup>

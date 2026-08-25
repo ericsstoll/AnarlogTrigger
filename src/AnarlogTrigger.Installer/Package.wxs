@@ -12,9 +12,11 @@
 
     <MediaTemplate EmbedCab="yes" />
 
+    <Icon Id="AppIcon" SourceFile="..\AnarlogTrigger\Assets\app.ico" />
+
     <Feature Id="ProductFeature" Title="AnarlogTrigger" Level="1">
       <ComponentGroupRef Id="PublishedFiles" />
-      <ComponentRef Id="StartMenuShortcut" />
+      <ComponentGroupRef Id="Shortcuts" />
     </Feature>
 
     <StandardDirectory Id="ProgramFiles64Folder">
@@ -25,6 +27,7 @@
       <Directory Id="ApplicationProgramsFolder" Name="AnarlogTrigger" />
     </StandardDirectory>
 
+    <!-- Non-advertised Start Menu shortcut: KeyPath must be HKCU per ICE38/ICE43. -->
     <ComponentGroup Id="Shortcuts" Directory="ApplicationProgramsFolder">
       <Component Id="StartMenuShortcut" Guid="$(ShortcutGuid)">
         <Shortcut
@@ -32,7 +35,8 @@
             Name="AnarlogTrigger"
             Description="Start Anarlog when a meeting app uses the microphone"
             Target="[INSTALLFOLDER]AnarlogTrigger.exe"
-            WorkingDirectory="INSTALLFOLDER" />
+            WorkingDirectory="INSTALLFOLDER"
+            Icon="AppIcon" />
         <RemoveFolder Id="RemoveApplicationProgramsFolder" On="uninstall" />
         <RegistryValue
             Root="HKCU"

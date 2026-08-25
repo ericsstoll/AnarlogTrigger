@@ -1,6 +1,6 @@
 # AnarlogTrigger
 
-Windows tray app that watches microphone capture sessions. When a common meeting app (or a process you add) holds the mic, it sends **Ctrl+Shift+N** to start Anarlog recording. When that app releases the mic, it shows a sticky stop reminder (no auto-stop).
+Windows tray app (WinUI 3 / Windows App SDK) that watches microphone capture sessions. When a common meeting app (or a process you add) holds the mic, it sends **Ctrl+Shift+N** to start Anarlog recording. When that app releases the mic, it shows a sticky stop reminder (no auto-stop).
 
 ## Run (dev)
 
@@ -23,7 +23,7 @@ Outputs:
 | `AnarlogTrigger-x64.msi` | `src/AnarlogTrigger.Installer/bin/x64/Release/` | Intel/AMD |
 | `AnarlogTrigger-arm64.msi` | `src/AnarlogTrigger.Installer/bin/arm64/Release/` | Windows on Arm |
 
-Each MSI installs a self-contained app under Program Files and adds a Start Menu shortcut. No separate .NET runtime install is required. Copy the MSI that matches the **target** machine’s architecture.
+Each MSI installs a self-contained WinUI 3 app under Program Files and adds a Start Menu shortcut. No separate .NET runtime or Windows App SDK install is required. Copy the MSI that matches the **target** machine’s architecture.
 
 Build one architecture only:
 
@@ -137,6 +137,7 @@ Browser-only apps (for example Google Meet in Chrome/Edge) are **not** in the de
 | --- | --- |
 | Status | Shows monitoring on/off and current phase (idle, debouncing, etc.) |
 | Start / Stop monitoring | Pause or resume mic watching without exiting |
+| Run at startup | Toggle launching AnarlogTrigger when you sign in to Windows |
 | Test start hotkey | Focuses `anarlog.exe` and sends Ctrl+Shift+N (verifies delivery to Anarlog) |
 | Add process… | Appends a name to `ExtraProcessNames` and reloads |
 | Open config | Opens `appsettings.json` |
