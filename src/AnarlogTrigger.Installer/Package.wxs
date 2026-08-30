@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package
+      Name="AnarlogTrigger ($(ArchLabel))"
+      Manufacturer="AnarlogTrigger"
+      Version="$(Version)"
+      UpgradeCode="$(UpgradeCode)"
+      Scope="perMachine"
+      Language="1033">
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of AnarlogTrigger is already installed." />
+
+    <MediaTemplate EmbedCab="yes" />
+
+    <Icon Id="AppIcon" SourceFile="..\AnarlogTrigger\Assets\app.ico" />
+
+    <Feature Id="ProductFeature" Title="AnarlogTrigger" Level="1">
+      <ComponentGroupRef Id="PublishedFiles" />
+      <ComponentGroupRef Id="Shortcuts" />
+    </Feature>
+
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="AnarlogTrigger" />
+    </StandardDirectory>
+
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="ApplicationProgramsFolder" Name="AnarlogTrigger" />
+    </StandardDirectory>
+
+    <!-- Non-advertised Start Menu shortcut: KeyPath must be HKCU per ICE38/ICE43. -->
+    <ComponentGroup Id="Shortcuts" Directory="ApplicationProgramsFolder">
+      <Component Id="StartMenuShortcut" Guid="$(ShortcutGuid)">
+        <Shortcut
+            Id="ApplicationStartMenuShortcut"
+            Name="AnarlogTrigger"
+            Description="Start Anarlog when a meeting app uses the microphone"
+            Target="[INSTALLFOLDER]AnarlogTrigger.exe"
+            WorkingDirectory="INSTALLFOLDER"
+            Icon="AppIcon" />
+        <RemoveFolder Id="RemoveApplicationProgramsFolder" On="uninstall" />
+        <RegistryValue
+            Root="HKCU"
+            Key="Software\AnarlogTrigger"
+            Name="Installed_$(ArchLabel)"
+            Type="integer"
+            Value="1"
+            KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+  </Package>
+</Wix>

@@ -1,0 +1,43 @@
+<Project Sdk="WixToolset.Sdk/5.0.2">
+
+  <PropertyGroup>
+    <OutputName>AnarlogTrigger-arm64</OutputName>
+    <Platform>arm64</Platform>
+    <InstallerPlatform>arm64</InstallerPlatform>
+    <Version>1.0.0</Version>
+    <DefineConstants>Version=$(Version);UpgradeCode={D7D257DC-F2B9-441E-B030-919AB70284AB};ShortcutGuid={FB0A68D0-2F0C-49AD-AD75-8BCB9945943A};ArchLabel=arm64</DefineConstants>
+    <PublishRuntimeIdentifier>win-arm64</PublishRuntimeIdentifier>
+    <AppPublishDir>$(MSBuildProjectDirectory)\publish-output\win-arm64\</AppPublishDir>
+    <AppProject>$(MSBuildProjectDirectory)\..\AnarlogTrigger\AnarlogTrigger.csproj</AppProject>
+    <OutputPath>bin\arm64\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\arm64\$(Configuration)\</IntermediateOutputPath>
+    <!-- WASDK satellite assemblies can carry language tags Heat rejects (ICE03). -->
+    <SuppressIces>ICE03</SuppressIces>
+  </PropertyGroup>
+
+  <!-- Sequence after x64 so parallel publishes of the same app do not collide. -->
+  <ItemGroup>
+    <ProjectReference Include="AnarlogTrigger.Installer.x64.wixproj" ReferenceOutputAssembly="false" Private="false" />
+  </ItemGroup>
+
+  <Target Name="PublishAppForInstaller" BeforeTargets="BeforeBuild">
+    <MakeDir Directories="$(AppPublishDir)" />
+    <Exec Command="dotnet publish &quot;$(AppProject)&quot; -c $(Configuration) -r $(PublishRuntimeIdentifier) --self-contained true -p:Platform=ARM64 -p:WindowsPackageType=None -p:WindowsAppSDKSelfContained=true -p:PublishSingleFile=false -o &quot;$(AppPublishDir)&quot;" />
+  </Target>
+
+  <ItemGroup>
+    <PackageReference Include="WixToolset.Heat" Version="5.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <HarvestDirectory Include="$(AppPublishDir)">
+      <ComponentGroupName>PublishedFiles</ComponentGroupName>
+      <DirectoryRefId>INSTALLFOLDER</DirectoryRefId>
+      <SuppressRootDirectory>true</SuppressRootDirectory>
+      <SuppressRegistry>true</SuppressRegistry>
+      <SuppressCom>true</SuppressCom>
+    </HarvestDirectory>
+    <BindPath Include="$(AppPublishDir)" />
+  </ItemGroup>
+
+</Project>

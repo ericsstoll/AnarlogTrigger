@@ -1,0 +1,38 @@
+<Project Sdk="WixToolset.Sdk/5.0.2">
+
+  <PropertyGroup>
+    <OutputName>AnarlogTrigger-x64</OutputName>
+    <Platform>x64</Platform>
+    <InstallerPlatform>x64</InstallerPlatform>
+    <Version>1.0.0</Version>
+    <DefineConstants>Version=$(Version);UpgradeCode={9E488C64-11C6-4A11-9856-0010D01C18E1};ShortcutGuid={42D48EB8-B3F8-4026-954A-BFBA3A75740A};ArchLabel=x64</DefineConstants>
+    <PublishRuntimeIdentifier>win-x64</PublishRuntimeIdentifier>
+    <AppPublishDir>$(MSBuildProjectDirectory)\publish-output\win-x64\</AppPublishDir>
+    <AppProject>$(MSBuildProjectDirectory)\..\AnarlogTrigger\AnarlogTrigger.csproj</AppProject>
+    <OutputPath>bin\x64\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\x64\$(Configuration)\</IntermediateOutputPath>
+    <!-- WASDK satellite assemblies can carry language tags Heat rejects (ICE03). -->
+    <SuppressIces>ICE03</SuppressIces>
+  </PropertyGroup>
+
+  <Target Name="PublishAppForInstaller" BeforeTargets="BeforeBuild">
+    <MakeDir Directories="$(AppPublishDir)" />
+    <Exec Command="dotnet publish &quot;$(AppProject)&quot; -c $(Configuration) -r $(PublishRuntimeIdentifier) --self-contained true -p:Platform=$(Platform) -p:WindowsPackageType=None -p:WindowsAppSDKSelfContained=true -p:PublishSingleFile=false -o &quot;$(AppPublishDir)&quot;" />
+  </Target>
+
+  <ItemGroup>
+    <PackageReference Include="WixToolset.Heat" Version="5.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <HarvestDirectory Include="$(AppPublishDir)">
+      <ComponentGroupName>PublishedFiles</ComponentGroupName>
+      <DirectoryRefId>INSTALLFOLDER</DirectoryRefId>
+      <SuppressRootDirectory>true</SuppressRootDirectory>
+      <SuppressRegistry>true</SuppressRegistry>
+      <SuppressCom>true</SuppressCom>
+    </HarvestDirectory>
+    <BindPath Include="$(AppPublishDir)" />
+  </ItemGroup>
+
+</Project>

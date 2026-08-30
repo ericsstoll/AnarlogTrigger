@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/AnarlogTrigger/AnarlogTrigger.csproj" />
+  </Folder>
+  <Folder Name="/src/AnarlogTrigger.Installer/">
+    <Project Path="src/AnarlogTrigger.Installer/AnarlogTrigger.Installer.arm64.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0" />
+    <Project Path="src/AnarlogTrigger.Installer/AnarlogTrigger.Installer.x64.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0" />
+  </Folder>
+</Solution>
