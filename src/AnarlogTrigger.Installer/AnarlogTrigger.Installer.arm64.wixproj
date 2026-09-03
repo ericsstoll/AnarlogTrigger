@@ -4,7 +4,6 @@
     <OutputName>AnarlogTrigger-arm64</OutputName>
     <Platform>arm64</Platform>
     <InstallerPlatform>arm64</InstallerPlatform>
-    <Version>1.0.0</Version>
     <DefineConstants>Version=$(Version);UpgradeCode={D7D257DC-F2B9-441E-B030-919AB70284AB};ShortcutGuid={FB0A68D0-2F0C-49AD-AD75-8BCB9945943A};ArchLabel=arm64</DefineConstants>
     <PublishRuntimeIdentifier>win-arm64</PublishRuntimeIdentifier>
     <AppPublishDir>$(MSBuildProjectDirectory)\publish-output\win-arm64\</AppPublishDir>
@@ -21,8 +20,9 @@
   </ItemGroup>
 
   <Target Name="PublishAppForInstaller" BeforeTargets="BeforeBuild">
+    <RemoveDir Directories="$(AppPublishDir)" />
     <MakeDir Directories="$(AppPublishDir)" />
-    <Exec Command="dotnet publish &quot;$(AppProject)&quot; -c $(Configuration) -r $(PublishRuntimeIdentifier) --self-contained true -p:Platform=ARM64 -p:WindowsPackageType=None -p:WindowsAppSDKSelfContained=true -p:PublishSingleFile=false -o &quot;$(AppPublishDir)&quot;" />
+    <Exec Command="dotnet publish &quot;$(AppProject)&quot; -c $(Configuration) -r $(PublishRuntimeIdentifier) --self-contained true -p:Platform=ARM64 -p:Version=$(Version) -p:WindowsPackageType=None -p:WindowsAppSDKSelfContained=true -p:PublishSingleFile=false -o &quot;$(AppPublishDir)&quot;" />
   </Target>
 
   <ItemGroup>

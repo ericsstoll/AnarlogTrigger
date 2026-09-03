@@ -7,6 +7,31 @@
       <ResourceDictionary.MergedDictionaries>
         <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
       </ResourceDictionary.MergedDictionaries>
+
+      <AcrylicBrush x:Key="AcrylicSurfaceDark"
+                    TintColor="Black"
+                    TintOpacity="0.55"
+                    FallbackColor="#F0202020" />
+      <AcrylicBrush x:Key="AcrylicSurfaceLight"
+                    TintColor="White"
+                    TintOpacity="0.65"
+                    FallbackColor="#F5F3F3F3" />
+
+      <SolidColorBrush x:Key="AcrylicBorderDark" Color="#30FFFFFF" />
+      <SolidColorBrush x:Key="AcrylicBorderLight" Color="#20000000" />
+
+      <Style TargetType="MenuFlyoutPresenter">
+        <Setter Property="Background" Value="{StaticResource AcrylicSurfaceDark}" />
+        <Setter Property="BorderBrush" Value="{StaticResource AcrylicBorderDark}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="4" />
+      </Style>
+
+      <Style TargetType="ContentDialog">
+        <Setter Property="Background" Value="{StaticResource AcrylicSurfaceDark}" />
+        <Setter Property="CornerRadius" Value="8" />
+      </Style>
     </ResourceDictionary>
   </Application.Resources>
 </Application>

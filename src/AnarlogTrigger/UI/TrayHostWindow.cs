@@ -40,6 +40,7 @@ public sealed class TrayHostWindow : Window
 
         Title = "AnarlogTrigger";
         Content = new Grid(); // required XamlRoot host for ContentDialogs
+        FluentUi.ApplyAcrylicHostWindow(this);
 
         ExtendsContentIntoTitleBar = true;
         AppWindow.IsShownInSwitchers = false;
@@ -78,6 +79,7 @@ public sealed class TrayHostWindow : Window
         exit.Click += (_, _) => OnExit();
 
         var menu = new MenuFlyout();
+        FluentUi.ApplyAcrylicMenuFlyout(menu, () => Content!.XamlRoot);
         menu.Items.Add(_statusItem);
         menu.Items.Add(new MenuFlyoutSeparator());
         menu.Items.Add(_toggleItem);
@@ -147,6 +149,7 @@ public sealed class TrayHostWindow : Window
             MeetingTriggerPhase.Idle => "idle",
             MeetingTriggerPhase.Debouncing => "debouncing start",
             MeetingTriggerPhase.RecordingStarted => "recording started",
+            MeetingTriggerPhase.DebouncingRelease => "debouncing release",
             MeetingTriggerPhase.AwaitingStopDismiss => "awaiting stop dismiss",
             _ => _service.Phase.ToString()
         };
@@ -233,6 +236,7 @@ public sealed class TrayHostWindow : Window
                 DefaultButton = ContentDialogButton.Primary,
                 XamlRoot = Content!.XamlRoot
             };
+            FluentUi.StyleContentDialog(dialog);
 
             if (await dialog.ShowAsync() != ContentDialogResult.Primary)
             {
@@ -256,6 +260,7 @@ public sealed class TrayHostWindow : Window
                     CloseButtonText = "OK",
                     XamlRoot = Content!.XamlRoot
                 };
+                FluentUi.StyleContentDialog(error);
                 await error.ShowAsync();
             }
         });
@@ -323,6 +328,7 @@ public sealed class TrayHostWindow : Window
                 CloseButtonText = "OK",
                 XamlRoot = Content!.XamlRoot
             };
+            FluentUi.StyleContentDialog(dialog);
             await dialog.ShowAsync();
         });
     }

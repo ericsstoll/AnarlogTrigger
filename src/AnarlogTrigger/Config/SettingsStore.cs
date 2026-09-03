@@ -91,6 +91,7 @@ public sealed class SettingsStore
         var node = new JsonObject
         {
             ["DebounceSeconds"] = Settings.DebounceSeconds,
+            ["ReleaseDebounceSeconds"] = Settings.ReleaseDebounceSeconds,
             ["StartCooldownSeconds"] = Settings.StartCooldownSeconds,
             ["PollIntervalMs"] = Settings.PollIntervalMs,
             ["BuiltInMeetingProcesses"] = ToJsonArray(Settings.BuiltInMeetingProcesses),

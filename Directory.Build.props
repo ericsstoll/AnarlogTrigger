@@ -1,0 +1,12 @@
+<Project>
+  <PropertyGroup>
+    <!-- Monotonic version for MSI MajorUpgrade + FileVersion replace.
+         Form: 1.yy.(dayOfYear + HH) e.g. 1.26.23821 — each part is &lt; 65535. -->
+    <_VersionYear Condition="'$(_VersionYear)' == ''">$([System.DateTime]::Now.ToString('yy'))</_VersionYear>
+    <_VersionBuild Condition="'$(_VersionBuild)' == ''">$([System.DateTime]::Now.DayOfYear)$([System.DateTime]::Now.ToString('HH'))</_VersionBuild>
+    <Version Condition="'$(Version)' == ''">1.$(_VersionYear).$(_VersionBuild)</Version>
+    <AssemblyVersion>$(Version).0</AssemblyVersion>
+    <FileVersion>$(Version).0</FileVersion>
+    <InformationalVersion>$(Version)</InformationalVersion>
+  </PropertyGroup>
+</Project>

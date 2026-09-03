@@ -5,6 +5,7 @@ public enum MeetingTriggerPhase
     Idle,
     Debouncing,
     RecordingStarted,
+    DebouncingRelease,
     AwaitingStopDismiss
 }
 
@@ -14,5 +15,6 @@ public sealed class MeetingSessionState
     public string? LastProcessName { get; set; }
     public uint? LastProcessId { get; set; }
     public DateTimeOffset? MicSeenSince { get; set; }
+    public DateTimeOffset? MicMissingSince { get; set; }
     public DateTimeOffset? LastStartUtc { get; set; }
 }

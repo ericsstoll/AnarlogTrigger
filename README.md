@@ -13,8 +13,19 @@ dotnet run --project src/AnarlogTrigger
 Build both self-contained MSIs (arm64 is cross-built from an x64 PC):
 
 ```powershell
-dotnet build AnarlogTrigger.slnx -c Release
+.\build.ps1
 ```
+
+Or build one architecture:
+
+```powershell
+.\build.ps1 -Architecture x64
+.\build.ps1 -Architecture arm64
+```
+
+Options: `-Clean`, `-SkipDist`. MSIs are copied to `dist\` by default.
+
+Avoid `dotnet build AnarlogTrigger.slnx` for release MSIs — it builds the app and both installers in parallel and can fail with file-lock errors. Use `build.ps1` instead.
 
 Outputs:
 
@@ -24,6 +35,10 @@ Outputs:
 | `AnarlogTrigger-arm64.msi` | `src/AnarlogTrigger.Installer/bin/arm64/Release/` | Windows on Arm |
 
 Each MSI installs a self-contained WinUI 3 app under Program Files and adds a Start Menu shortcut. No separate .NET runtime or Windows App SDK install is required. Copy the MSI that matches the **target** machine’s architecture.
+
+Product/file versions are auto-stamped on each build (`1.yy.<dayOfYear><HH>`, e.g. `1.26.23821`) so a newer MSI **replaces** the previous install instead of leaving an old `AnarlogTrigger.exe` in place. If you still see an outdated tray UI (no **Run at startup**, classic WinForms menu), uninstall AnarlogTrigger once from Apps & features, then install the new MSI.
+
+Do **not** copy `src/AnarlogTrigger/bin/...` or a partial OneDrive folder to the target — use the MSI (or the full `src/AnarlogTrigger.Installer/publish-output/win-x64/` / `win-arm64/` tree after a Release installer build).
 
 Build one architecture only:
 
@@ -54,6 +69,7 @@ JSON object. Property names are case-sensitive as shown below. Process name matc
 | Property | Type | Default | Description |
 | --- | --- | --- | --- |
 | `DebounceSeconds` | number | `5` | How long a watched app must keep the microphone **active** before AnarlogTrigger sends Ctrl+Shift+N. Brief mic grabs (mute toggles, device checks) under this duration do not start recording. Minimum effective value is `1`. |
+| `ReleaseDebounceSeconds` | number | `5` | How long the watched mic must stay **gone** after a start before the stop reminder is shown. Brief Active→Inactive blips (mute, device switch, Teams session refresh) under this duration do not treat the meeting as ended. Minimum effective value is `1`. |
 | `StartCooldownSeconds` | number | `60` | After a successful start hotkey, ignore new mic-acquire events for this many seconds so one meeting does not fire repeatedly. |
 | `PollIntervalMs` | number | `1000` | How often (milliseconds) to poll Windows capture (microphone) sessions. Lower = faster detection, slightly more CPU. Values below `250` are clamped to `250`. |
 | `BuiltInMeetingProcesses` | string[] | see below | Process names treated as meeting apps. Remove entries to stop watching specific apps; replace the list to customize defaults. If the array is empty on load, built-in defaults are restored. |
@@ -89,6 +105,7 @@ Browser-only apps (for example Google Meet in Chrome/Edge) are **not** in the de
 ```json
 {
   "DebounceSeconds": 5,
+  "ReleaseDebounceSeconds": 5,
   "StartCooldownSeconds": 60,
   "PollIntervalMs": 1000,
   "BuiltInMeetingProcesses": [
@@ -128,14 +145,14 @@ Browser-only apps (for example Google Meet in Chrome/Edge) are **not** in the de
 ### Behavior notes tied to config
 
 - **Start:** after debounce, sends **Ctrl+Shift+N** once (Anarlog must be running with that global shortcut).  
-- **Stop:** does not auto-stop Anarlog; when the watched mic is released, a sticky Windows toast asks you to stop recording. The toast includes **Open Anarlog** (focuses `anarlog.exe`) and **Dismiss**.  
+- **Stop:** does not auto-stop Anarlog; when the watched mic stays released for `ReleaseDebounceSeconds`, a sticky Windows toast asks you to stop recording. Brief mic blips during a call do not trigger it. The toast includes **Open Anarlog** (focuses `anarlog.exe`) and **Dismiss**.  
 - Invalid JSON will prevent a clean reload; fix the file and use **Reload config** or restart.
 
 ## Tray menu
 
 | Item | Action |
 | --- | --- |
-| Status | Shows monitoring on/off and current phase (idle, debouncing, etc.) |
+| Status | Shows monitoring on/off and current phase (idle, debouncing start, recording started, debouncing release, etc.) |
 | Start / Stop monitoring | Pause or resume mic watching without exiting |
 | Run at startup | Toggle launching AnarlogTrigger when you sign in to Windows |
 | Test start hotkey | Focuses `anarlog.exe` and sends Ctrl+Shift+N (verifies delivery to Anarlog) |
@@ -153,3 +170,4 @@ Rolling log files: `%LocalAppData%\AnarlogTrigger\logs\` (kept for 14 days). Use
 
 - Anarlog installed separately, with global shortcut **Ctrl+Shift+N** bound to start listening
 - Windows 10/11
+- Only one AnarlogTrigger instance per user session (a second launch exits immediately)
